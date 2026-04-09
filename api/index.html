@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Insolvency Hub — UK Forms & Document Library</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --bg2: #f7f7f5;
+    --bg3: #f0efe9;
+    --text: #1a1a18;
+    --text2: #6b6b66;
+    --text3: #9b9b94;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --blue: #185FA5;
+    --blue-bg: #E6F1FB;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); height: 100vh; overflow: hidden; }
+  .app { display: flex; height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar { width: 210px; min-width: 210px; background: var(--bg); border-right: 0.5px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+  .logo { padding: 16px 14px 12px; border-bottom: 0.5px solid var(--border); }
+  .logo h1 { font-size: 15px; font-weight: 600; color: var(--text); }
+  .logo p { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .sb-section { padding: 14px 10px 4px; font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; }
+  .cat-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 10px; background: none; border: none; cursor: pointer; font-size: 12px; color: var(--text2); border-radius: var(--radius-sm); text-align: left; font-family: inherit; line-height: 1.3; transition: background 0.1s; }
+  .cat-btn:hover { background: var(--bg2); color: var(--text); }
+  .cat-btn.active { background: var(--bg2); color: var(--text); font-weight: 600; }
+  .cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .sb-pad { padding: 6px; }
+  .sidebar-footer { margin-top: auto; padding: 12px 14px; border-top: 0.5px solid var(--border); font-size: 10px; color: var(--text3); }
+
+  /* MAIN */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+  .topbar { background: var(--bg); border-bottom: 0.5px solid var(--border); padding: 11px 16px; display: flex; align-items: center; gap: 12px; }
+  .topbar-left { display: flex; align-items: center; gap: 10px; flex: 1; }
+  .search-wrap { flex: 1; position: relative; }
+  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 13px; pointer-events: none; }
+  .search { width: 100%; padding: 8px 12px 8px 32px; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); font-size: 13px; background: var(--bg2); color: var(--text); font-family: inherit; outline: none; transition: border-color 0.15s; }
+  .search:focus { border-color: var(--blue); background: var(--bg); }
+  .count-badge { font-size: 12px; color: var(--text3); white-space: nowrap; }
+  .content { flex: 1; overflow-y: auto; padding: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .empty-grid { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; color: var(--text3); font-size: 13px; text-align: center; gap: 8px; }
+
+  /* CARDS */
+  .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 13px 14px; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s; }
+  .card:hover { border-color: var(--border2); }
+  .card.selected { border-color: var(--blue); border-width: 1.5px; }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; margin-bottom: 5px; }
+  .card-name { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .card-num { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; background: var(--bg2); color: var(--text2); white-space: nowrap; flex-shrink: 0; max-width: 85px; overflow: hidden; text-overflow: ellipsis; }
+  .card-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+  .card-tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; margin-top: 8px; }
+
+  /* PANEL */
+  .panel { width: 330px; min-width: 330px; background: var(--bg); border-left: 0.5px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  .panel-header { padding: 14px 16px; border-bottom: 0.5px solid var(--border); }
+  .panel-label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+  .panel-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45; }
+  .panel-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .panel-body { flex: 1; overflow-y: auto; padding: 16px; }
+  .ai-section { margin-bottom: 16px; }
+  .ai-section-title { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+  .ai-section-body { font-size: 12px; color: var(--text); line-height: 1.7; }
+  .loading { display: flex; align-items: center; gap: 10px; color: var(--text3); font-size: 12px; padding: 20px 0; }
+  .dot-row { display: flex; gap: 4px; }
+  .dot-anim { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); animation: pulse 1.2s infinite; }
+  .dot-anim:nth-child(2) { animation-delay: 0.2s; }
+  .dot-anim:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%,80%,100%{opacity:0.25} 40%{opacity:1} }
+  .empty-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text3); font-size: 12px; text-align: center; padding: 20px; gap: 10px; line-height: 1.6; }
+  .empty-panel-icon { font-size: 36px; opacity: 0.3; }
+  .dl-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; padding: 7px 14px; background: var(--bg2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); font-size: 11px; color: var(--text2); text-decoration: none; transition: background 0.1s; }
+  .dl-link:hover { background: var(--bg3); color: var(--text); }
+  .error-msg { font-size: 12px; color: #A32D2D; padding: 8px 0; }
+
+  /* TAG COLOURS */
+  .t-mor { background: #E1F5EE; color: #0F6E56; }
+  .t-cva { background: #EEEDFE; color: #534AB7; }
+  .t-adm { background: #EAF3DE; color: #3B6D11; }
+  .t-rec { background: #FBEAF0; color: #993556; }
+  .t-liq { background: #E6F1FB; color: #185FA5; }
+  .t-wuc { background: #FAEEDA; color: #854F0B; }
+  .t-com { background: #F1EFE8; color: #5F5E5A; }
+  .t-court { background: #FAEEDA; color: #633806; }
+  .t-is { background: #EAF3DE; color: #085041; }
+  .t-bkr { background: #FAECE7; color: #993C1D; }
+  .t-sip { background: #EEEDFE; color: #3C3489; }
+  .t-prac { background: #E6F1FB; color: #0C447C; }
+  .t-hmrc { background: #FCEBEB; color: #A32D2D; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <h1>Insolvency Hub</h1>
+      <p>UK document &amp; forms library</p>
+    </div>
+    <div class="sb-pad">
+      <div class="sb-section">Companies House</div>
+      <button class="cat-btn active" data-cat="all"><span class="cat-dot" style="background:#888"></span>All documents</button>
+      <button class="cat-btn" data-cat="moratorium"><span class="cat-dot" style="background:#1D9E75"></span>Moratorium</button>
+      <button class="cat-btn" data-cat="cva"><span class="cat-dot" style="background:#7F77DD"></span>CVA</button>
+      <button class="cat-btn" data-cat="administration"><span class="cat-dot" style="background:#639922"></span>Administration</button>
+      <button class="cat-btn" data-cat="receivership"><span class="cat-dot" style="background:#D4537E"></span>Receivership</button>
+      <button class="cat-btn" data-cat="liquidation"><span class="cat-dot" style="background:#378ADD"></span>MVL / CVL</button>
+      <button class="cat-btn" data-cat="wuc"><span class="cat-dot" style="background:#BA7517"></span>Court winding up</button>
+      <button class="cat-btn" data-cat="committee"><span class="cat-dot" style="background:#888780"></span>Committees</button>
+      <div class="sb-section">Court &amp; Service</div>
+      <button class="cat-btn" data-cat="court"><span class="cat-dot" style="background:#BA7517"></span>HMCTS court forms</button>
+      <button class="cat-btn" data-cat="is"><span class="cat-dot" style="background:#1D9E75"></span>Insolvency Service</button>
+      <button class="cat-btn" data-cat="bankruptcy"><span class="cat-dot" style="background:#D85A30"></span>Bankruptcy</button>
+      <div class="sb-section">Professional</div>
+      <button class="cat-btn" data-cat="sip"><span class="cat-dot" style="background:#534AB7"></span>SIPs (R3)</button>
+      <button class="cat-btn" data-cat="practitioner"><span class="cat-dot" style="background:#185FA5"></span>Practitioner docs</button>
+      <button class="cat-btn" data-cat="hmrc"><span class="cat-dot" style="background:#A32D2D"></span>HMRC</button>
+    </div>
+    <div class="sidebar-footer">Insolvency Hub &copy; 2025</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="search-wrap">
+          <span class="search-icon">&#128269;</span>
+          <input class="search" type="text" id="searchInput" placeholder="Search forms, categories, descriptions..." />
+        </div>
+      </div>
+      <span class="count-badge" id="countLabel">Loading...</span>
+    </div>
+    <div class="content">
+      <div class="grid" id="formsGrid"></div>
+    </div>
+  </div>
+
+  <!-- AI PANEL -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-label">AI Explainer</div>
+      <div class="panel-title" id="panelTitle">Select a document</div>
+      <div class="panel-sub" id="panelSub">Click any card to get an explanation</div>
+    </div>
+    <div class="panel-body" id="panelBody">
+      <div class="empty-panel">
+        <div class="empty-panel-icon">📋</div>
+        <p>Click any document card to get an instant AI explanation — what it is, when to use it, who files it, key points and common mistakes.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const CAT_LABEL = { moratorium:'Moratorium', cva:'CVA', administration:'Administration', receivership:'Receivership', liquidation:'MVL / CVL', wuc:'Court winding up', committee:'Committee', court:'HMCTS court', is:'Insolvency Service', bankruptcy:'Bankruptcy', sip:'SIP', practitioner:'Practitioner', hmrc:'HMRC' };
+const CAT_TAG = { moratorium:'t-mor', cva:'t-cva', administration:'t-adm', receivership:'t-rec', liquidation:'t-liq', wuc:'t-wuc', committee:'t-com', court:'t-court', is:'t-is', bankruptcy:'t-bkr', sip:'t-sip', practitioner:'t-prac', hmrc:'t-hmrc' };
+
+const FORMS = [
+  {id:1,num:'MT01',name:'Commencement of a moratorium',cat:'moratorium',desc:'Filed at Companies House when a moratorium commences under the Corporate Insolvency and Governance Act 2020.',url:'https://www.gov.uk/government/publications/commencement-of-a-moratorium-mt01'},
+  {id:2,num:'MT02',name:'Extension of a moratorium',cat:'moratorium',desc:'Filed when a moratorium is extended beyond its initial 20 business day period.',url:'https://www.gov.uk/government/publications/extension-of-a-moratorium-mt02'},
+  {id:3,num:'MT03',name:'Early end of a moratorium',cat:'moratorium',desc:'Filed when a moratorium ends before its scheduled expiry date.',url:'https://www.gov.uk/government/publications/early-end-of-a-moratorium-mt03'},
+  {id:4,num:'MT04',name:'End of moratorium by monitor',cat:'moratorium',desc:'Filed when the monitor brings the moratorium to an end.',url:'https://www.gov.uk/government/publications/end-of-moratorium-by-a-monitor-mt04'},
+  {id:5,num:'MT05',name:'End of moratorium by court',cat:'moratorium',desc:'Filed when a court order ends the moratorium.',url:'https://www.gov.uk/government/publications/end-of-moratorium-by-a-court-mt05'},
+  {id:6,num:'MT06',name:'End of moratorium following CVA/extension disposal',cat:'moratorium',desc:'Filed when the moratorium ends following disposal of an extension application or CVA action.',url:'https://www.gov.uk/government/publications/end-of-moratorium-following-disposal-of-extension-application-or-cva-action-mt06'},
+  {id:7,num:'MT07',name:'Court order permitting disposal of property',cat:'moratorium',desc:'Filed when a court permits disposal of company property during a moratorium.',url:'https://www.gov.uk/government/publications/court-order-permitting-disposal-of-property-or-goods-mt07'},
+  {id:8,num:'MT08',name:'Appointment of replacement/additional monitor',cat:'moratorium',desc:'Filed when a replacement or additional monitor is appointed by court order during a moratorium.',url:'https://www.gov.uk/government/publications/appointment-of-replacement-or-additional-monitor-following-court-order-mt08'},
+  {id:9,num:'MT09',name:'Monitor ceasing to act',cat:'moratorium',desc:'Filed when a monitor ceases to act following a court order.',url:'https://www.gov.uk/government/publications/monitor-ceasing-to-act-following-court-order-mt09'},
+  {id:10,num:'CVA1',name:'Notice of voluntary arrangement taking effect',cat:'cva',desc:'Filed at Companies House once creditors have approved the CVA and it has formally taken effect.',url:'https://www.gov.uk/government/publications/give-notice-of-voluntary-arrangement-taking-effect-cva1'},
+  {id:11,num:'CVA2',name:'Notice of order revoking/suspending CVA',cat:'cva',desc:'Filed when a court order revokes or suspends the voluntary arrangement.',url:'https://www.gov.uk/government/publications/give-notice-of-order-of-revocation-or-suspension-of-voluntary-arrangement-cva2'},
+  {id:12,num:'CVA3',name:"Supervisor's progress report (CVA)",cat:'cva',desc:'Annual report by the CVA supervisor to creditors on payments received and progress.',url:'https://www.gov.uk/government/publications/give-notice-of-supervisors-progress-report-in-voluntary-arrangement-cva3'},
+  {id:13,num:'CVA4',name:'Notice of termination or completion of CVA',cat:'cva',desc:'Filed when the CVA is fully implemented or terminated early.',url:'https://www.gov.uk/government/publications/give-notice-of-termination-or-full-implementation-of-voluntary-arrangement-cva4'},
+  {id:14,num:'VAC',name:'Court order in respect of CVA or moratorium',cat:'cva',desc:'Filed when a court makes an order in connection with a voluntary arrangement or moratorium.',url:'https://www.gov.uk/government/publications/give-notice-of-a-court-order-in-respect-of-a-voluntary-arrangement-or-moratorium-vamc'},
+  {id:15,num:'AM01',name:"Notice of administrator's appointment",cat:'administration',desc:'Primary form filed at Companies House to notify of an administrator appointment, whether by court or out of court.',url:'https://www.gov.uk/government/publications/give-notice-of-administrators-appointment-am01'},
+  {id:16,num:'AM02',name:'Statement of affairs (administration)',cat:'administration',desc:"Filed when the directors' statement of affairs has been submitted to the administrator.",url:'https://www.gov.uk/government/publications/give-notice-of-statement-of-affairs-in-administration-am02'},
+  {id:17,num:'AM03',name:"Administrator's proposals",cat:'administration',desc:'Filed when the administrator sends proposals to creditors, within 8 weeks of appointment.',url:'https://www.gov.uk/government/publications/give-notice-of-administrators-proposals-am03'},
+  {id:18,num:'AM04',name:'Extension of time to deliver proposals',cat:'administration',desc:'Filed when more than 8 weeks is needed to send proposals to creditors.',url:'https://www.gov.uk/government/publications/give-notice-of-the-extension-of-time-to-deliver-administrators-proposals-am04'},
+  {id:19,num:'AM05',name:'Extension of time to seek approval',cat:'administration',desc:'Filed when additional time is needed to obtain creditor approval of proposals.',url:'https://www.gov.uk/government/publications/give-notice-of-extension-of-time-to-seek-approval-am05'},
+  {id:20,num:'AM06',name:"Approval of administrator's proposals",cat:'administration',desc:"Filed once creditors have approved the administrator's proposals.",url:'https://www.gov.uk/government/publications/give-notice-of-approval-of-administrators-proposals-am06'},
+  {id:21,num:'AM07',name:"Creditor's decision on proposals",cat:'administration',desc:"Records the outcome of the creditor decision procedure on the administrator's proposals.",url:'https://www.gov.uk/government/publications/give-notice-of-creditors-decision-on-administrators-proposals-am07'},
+  {id:22,num:'AM08',name:"Revision of administrator's proposals",cat:'administration',desc:'Filed when the administrator revises their original proposals, requiring fresh creditor approval.',url:'https://www.gov.uk/government/publications/give-notice-of-revision-of-administrators-proposals-am08'},
+  {id:23,num:'AM09',name:"Result of creditor's decision",cat:'administration',desc:'Filed to record the result of any creditor decision procedure during administration.',url:'https://www.gov.uk/government/publications/give-notice-of-result-of-creditors-decision-am09'},
+  {id:24,num:'AM10',name:"Administrator's progress report",cat:'administration',desc:'Filed every 6 months to update creditors on progress, receipts and payments.',url:'https://www.gov.uk/government/publications/give-notice-of-administrators-progress-report-am10'},
+  {id:25,num:'AM11',name:'Appointment of replacement/additional administrator',cat:'administration',desc:'Filed when a new or additional administrator is appointed.',url:'https://www.gov.uk/government/publications/give-notice-of-appointment-of-replacement-or-additional-administrator-am11'},
+  {id:26,num:'AM12',name:'Order limiting disclosure',cat:'administration',desc:'Filed when a court restricts disclosure of certain information in the administration.',url:'https://www.gov.uk/government/publications/give-notice-of-order-limiting-disclosure-am12'},
+  {id:27,num:'AM13',name:'Rescission/amendment of disclosure order',cat:'administration',desc:'Filed when a previous order limiting disclosure is amended or rescinded.',url:'https://www.gov.uk/government/publications/give-notice-of-rescission-or-amendment-of-order-limiting-disclosure-am13'},
+  {id:28,num:'AM14',name:'Order to dispose of charged property',cat:'administration',desc:'Filed after a court permits disposal of fixed-charge property by the administrator.',url:'https://www.gov.uk/government/publications/give-notice-of-an-order-to-dispose-of-charged-property-am14'},
+  {id:29,num:'AM15',name:'Resignation of administrator',cat:'administration',desc:'Filed when an administrator resigns from office.',url:'https://www.gov.uk/government/publications/give-notice-of-resignation-of-administrator-am15'},
+  {id:30,num:'AM16',name:'Court order removing administrator',cat:'administration',desc:'Filed when a court removes an administrator from office.',url:'https://www.gov.uk/government/publications/give-notice-of-order-removing-administrator-from-office-am16'},
+  {id:31,num:'AM17',name:'Vacation of office (administrator)',cat:'administration',desc:'Filed when an administrator vacates office for reasons other than death or court removal.',url:'https://www.gov.uk/government/publications/give-notice-of-vacation-of-office-am17'},
+  {id:32,num:'AM18',name:'Notice of deceased administrator',cat:'administration',desc:'Filed to notify Companies House that an administrator has died in office.',url:'https://www.gov.uk/government/publications/give-notice-of-deceased-administrator-am18'},
+  {id:33,num:'AM19',name:'Extension of period of administration',cat:'administration',desc:'Filed when administration is extended beyond the initial 12 months.',url:'https://www.gov.uk/government/publications/give-notice-of-the-extension-of-period-of-administration-am19'},
+  {id:34,num:'AM20',name:'Automatic end of administration',cat:'administration',desc:'Filed when the administration comes to an end automatically.',url:'https://www.gov.uk/government/publications/give-notice-of-automatic-end-of-administration-am20'},
+  {id:35,num:'AM21',name:'End of administration',cat:'administration',desc:'Filed when the administrator formally ends the administration on completing the purpose.',url:'https://www.gov.uk/government/publications/give-notice-of-end-of-administration-am21'},
+  {id:36,num:'AM22',name:'Move from administration to CVL',cat:'administration',desc:"Filed when an administration converts into a creditors' voluntary liquidation.",url:'https://www.gov.uk/government/publications/give-notice-of-a-move-from-administration-to-creditors-voluntary-liquidation-am22'},
+  {id:37,num:'AM23',name:'Move from administration to dissolution',cat:'administration',desc:'Filed when an administration ends by moving directly to dissolution.',url:'https://www.gov.uk/government/publications/give-notice-of-move-from-administration-to-dissolution-am23'},
+  {id:38,num:'AM24',name:'Court order on date of dissolution',cat:'administration',desc:'Filed when a court order affects the dissolution date following administration.',url:'https://www.gov.uk/government/publications/give-notice-of-a-court-order-in-respect-of-date-of-dissolution-am24'},
+  {id:39,num:'AM25',name:'Court order ending administration',cat:'administration',desc:'Filed when a court formally ends an administration.',url:'https://www.gov.uk/government/publications/give-notice-of-court-order-ending-administration-am25'},
+  {id:40,num:'REC1',name:"Administrative receiver's report",cat:'receivership',desc:'Annual report filed by the administrative receiver detailing conduct of receivership and receipts/payments.',url:'https://www.gov.uk/government/publications/give-notice-of-administrator-receivers-report-rec1'},
+  {id:41,num:'REC2',name:'Summary of receipts and payments (receivership)',cat:'receivership',desc:'Periodic summary of all money received and paid out during the receivership.',url:'https://www.gov.uk/government/publications/give-notice-of-summary-of-receipts-and-payments-rec2'},
+  {id:42,num:'REC3',name:'Disposal of charged property (receivership)',cat:'receivership',desc:'Filed when a court permits disposal of charged property in receivership.',url:'https://www.gov.uk/government/publications/give-notice-of-order-of-disposal-of-charged-property-rec3'},
+  {id:43,num:'REC4',name:'Statement of affairs (receivership)',cat:'receivership',desc:"Directors' sworn statement of assets and liabilities delivered to the administrative receiver.",url:'https://www.gov.uk/government/publications/give-notice-of-statement-of-affairs-in-administrative-receivership-rec4'},
+  {id:44,num:'REC5',name:'Notice of deceased administrative receiver',cat:'receivership',desc:'Filed to notify Companies House that an administrative receiver has died in office.',url:'https://www.gov.uk/government/publications/give-notice-of-deceased-administrative-receiver-rec5'},
+  {id:45,num:'600CH',name:'Appoint liquidator in voluntary winding up',cat:'liquidation',desc:'Filed at Companies House to formally notify of a liquidator appointment in an MVL or CVL.',url:'https://www.gov.uk/government/publications/appoint-liquidator-in-voluntary-winding-up-600'},
+  {id:46,num:'LIQ01',name:'Declaration of solvency (MVL)',cat:'liquidation',desc:'Statutory declaration by directors that the company can pay all debts within 12 months. Required before an MVL.',url:'https://www.gov.uk/government/publications/give-notice-of-statutory-declaration-of-solvency-liq01'},
+  {id:47,num:'LIQ02',name:'Statement of affairs (CVL)',cat:'liquidation',desc:'Filed when the statement of affairs has been prepared and delivered in a CVL.',url:'https://www.gov.uk/government/publications/give-notice-of-statement-of-affairs-liq02'},
+  {id:48,num:'LIQ03',name:'Progress report (voluntary winding up)',cat:'liquidation',desc:'Annual report to creditors and members on receipts, payments and progress.',url:'https://www.gov.uk/government/publications/give-notice-of-progress-report-in-voluntary-winding-up-liq03'},
+  {id:49,num:'LIQ04',name:'Order deferring dissolution date',cat:'liquidation',desc:'Filed when a court defers the dissolution date following voluntary winding up.',url:'https://www.gov.uk/government/publications/give-notice-of-order-deferring-the-date-of-dissolution-liq04'},
+  {id:50,num:'LIQ05',name:'Order limiting disclosure (CVL)',cat:'liquidation',desc:'Filed when a court restricts public access to the statement of affairs in a CVL.',url:'https://www.gov.uk/government/publications/give-notice-of-order-limiting-disclosure-of-statement-of-affairs-in-cvl-liq05'},
+  {id:51,num:'LIQ06',name:"Liquidator's resignation",cat:'liquidation',desc:'Filed when a liquidator resigns from their appointment in an MVL or CVL.',url:'https://www.gov.uk/government/publications/give-notice-of-liquidators-resignation-liq06'},
+  {id:52,num:'LIQ07',name:'Removal of liquidator by creditors',cat:'liquidation',desc:'Filed when creditors vote to remove a liquidator in a CVL.',url:'https://www.gov.uk/government/publications/give-notice-of-removal-of-liquidator-by-creditors-liq07'},
+  {id:53,num:'LIQ08',name:'Loss of IP qualification',cat:'liquidation',desc:'Filed when a liquidator loses their authorisation to act as an insolvency practitioner.',url:'https://www.gov.uk/government/publications/give-notice-of-loss-of-qualification-as-insolvency-practitioner-liq08'},
+  {id:54,num:'LIQ09',name:'Notice of deceased liquidator',cat:'liquidation',desc:'Filed to notify Companies House that a liquidator has died in office.',url:'https://www.gov.uk/government/publications/give-notice-of-deceased-liquidator-liq09'},
+  {id:55,num:'LIQ10',name:'Removal of liquidator by court order',cat:'liquidation',desc:'Filed when a court removes a liquidator from office in a voluntary winding up.',url:'https://www.gov.uk/government/publications/give-notice-of-removal-of-liquidator-by-court-order-liq10'},
+  {id:56,num:'LIQ11',name:'Removal of liquidator by company meeting (MVL)',cat:'liquidation',desc:'Filed when members vote to remove the liquidator at a company meeting in an MVL.',url:'https://www.gov.uk/government/publications/give-notice-of-removal-of-liquidator-by-company-meeting-in-mvl-liq11'},
+  {id:57,num:'LIQ13',name:'Final account prior to dissolution (MVL)',cat:'liquidation',desc:'Filed on completion of an MVL setting out final receipts and payments before dissolution.',url:'https://www.gov.uk/government/publications/give-notice-of-final-account-prior-to-dissolution-in-mvl-liq13'},
+  {id:58,num:'LIQ14',name:'Final account prior to dissolution (CVL)',cat:'liquidation',desc:'Filed on completion of a CVL setting out final receipts, payments and distributions.',url:'https://www.gov.uk/government/publications/give-notice-of-final-account-prior-to-dissolution-in-cvl-liq14'},
+  {id:59,num:'WU02',name:'Appointment of provisional liquidator',cat:'wuc',desc:'Filed when a court appoints a provisional liquidator prior to a winding-up order.',url:'https://www.gov.uk/government/publications/give-notice-of-order-of-appointment-of-provisional-liquidator-wu02'},
+  {id:60,num:'WU03',name:'Termination of provisional liquidator',cat:'wuc',desc:'Filed when the provisional liquidator appointment is terminated by court.',url:'https://www.gov.uk/government/publications/give-notice-of-termination-of-appointment-of-provisional-liquidator-wu03'},
+  {id:61,num:'WU04',name:'Appointment of liquidator (court winding up)',cat:'wuc',desc:'Filed after a court winding-up order to notify of the liquidator appointment.',url:'https://www.gov.uk/government/publications/give-notice-of-the-appointment-of-liquidator-in-a-winding-up-by-the-court-wu04'},
+  {id:62,num:'WU07',name:'Progress report (court winding up)',cat:'wuc',desc:'Annual progress report to creditors in a compulsory liquidation.',url:'https://www.gov.uk/government/publications/give-notice-of-a-progress-report-in-a-winding-up-by-the-court-wu07'},
+  {id:63,num:'WU13',name:'Court order on appeal (winding up)',cat:'wuc',desc:'Filed when a court makes an order on appeal in a winding-up by the court.',url:'https://www.gov.uk/government/publications/give-notice-of-order-of-court-on-appeal-against-decision-wu13'},
+  {id:64,num:'WU14',name:'Order for removal of liquidator (court)',cat:'wuc',desc:'Filed when a court removes a liquidator in a compulsory winding up.',url:'https://www.gov.uk/government/publications/give-notice-of-an-order-for-removal-of-liquidator-wu14'},
+  {id:65,num:'WU15',name:'Final account prior to dissolution (court)',cat:'wuc',desc:'Filed on completion of a compulsory liquidation before dissolution.',url:'https://www.gov.uk/government/publications/give-notice-of-the-final-account-prior-to-dissolution-wu15'},
+  {id:66,num:'COM1',name:"Establishment of creditors'/liquidation committee",cat:'committee',desc:"Filed when a creditors' or liquidation committee is formally established.",url:'https://www.gov.uk/government/publications/give-notice-of-establishment-of-creditors-or-liquidation-committee-com1'},
+  {id:67,num:'COM2',name:'Change of committee membership',cat:'committee',desc:"Filed whenever there is a change in the membership of a creditors' or liquidation committee.",url:'https://www.gov.uk/government/publications/give-notice-of-change-of-membership-of-a-creditors-or-liquidation-committee-com2'},
+  {id:68,num:'COM3',name:"Continuation of creditors' committee",cat:'committee',desc:"Filed when a creditors' committee from administration continues into a subsequent CVL.",url:'https://www.gov.uk/government/publications/give-notice-of-continuation-of-creditors-committee-com3'},
+  {id:69,num:'COM4',name:'Cessation of liquidation committee',cat:'committee',desc:'Filed when a liquidation committee ceases to exist during a winding up.',url:'https://www.gov.uk/government/publications/give-notice-of-cessation-of-liquidation-committee-com4'},
+  {id:70,num:'Bank 1',name:'Creditor bankruptcy petition (fees immediate)',cat:'court',desc:'HMCTS form for a creditor to present a bankruptcy petition where fees are payable immediately.',url:'https://www.gov.uk/government/publications/apply-for-creditor-bankruptcy-debtor-fees-payable-immediately-form-bank-1'},
+  {id:71,num:'Bank 2',name:'Creditor bankruptcy petition (fees future date)',cat:'court',desc:'HMCTS form for a creditor bankruptcy petition where fees are payable at a future date.',url:'https://www.gov.uk/government/publications/apply-for-creditor-bankruptcy-debtor-fees-payable-at-a-future-date-form-bank-2'},
+  {id:72,num:'Bank 3',name:'Bankruptcy petition (judgment returned)',cat:'court',desc:'Petition where execution or other process on a judgment has been returned in whole or part.',url:'https://www.gov.uk/government/publications/form-bank-3-creditors-bankruptcy-petition-where-execution-or-other-process-on-a-judgment-has-been-returned-in-whole-or-part'},
+  {id:73,num:'Bank 4',name:'Bankruptcy petition — default on IVA',cat:'court',desc:'Creditor bankruptcy petition where the debtor has defaulted on a voluntary arrangement.',url:'https://www.gov.uk/government/publications/form-bank-4-bankruptcy-petition-for-default-in-connection-with-voluntary-arrangement'},
+  {id:74,num:'Bank 5',name:'Verify a petition against a debtor',cat:'court',desc:'Verification form confirming the content of a bankruptcy petition presented against a debtor.',url:'https://www.gov.uk/government/publications/verify-a-petition-against-a-debtor-form-bank-5'},
+  {id:75,num:'Bank 6',name:'Notice of opposition to bankruptcy order',cat:'court',desc:'Filed by the debtor or other party to oppose the making of a bankruptcy order.',url:'https://www.gov.uk/government/publications/give-notice-of-opposition-to-a-bankruptcy-order-form-bank-6'},
+  {id:76,num:'Bank 7',name:'Notice of persons intending to appear (bankruptcy)',cat:'court',desc:'Filed by parties intending to appear at the hearing of a bankruptcy petition.',url:'https://www.gov.uk/government/publications/form-bank-7-notice-of-persons-intending-to-appear'},
+  {id:77,num:'Bank 8',name:'List of attendees at bankruptcy hearing',cat:'court',desc:'Filed at court listing all parties attending the bankruptcy petition hearing.',url:'https://www.gov.uk/government/publications/list-attendees-at-a-court-hearing-for-a-petition-form-bank-8'},
+  {id:78,num:'Comp 1',name:'Winding up petition (creditor)',cat:'court',desc:'Primary HMCTS form for a creditor to present a petition to wind up a company.',url:'https://www.gov.uk/government/publications/apply-to-wind-up-a-company-that-owes-you-money-form-comp-1'},
+  {id:79,num:'Comp 2',name:'Confirm details of winding up petition',cat:'court',desc:'Confirmation form verifying the details of a winding up petition.',url:'https://www.gov.uk/government/publications/confirm-details-of-a-winding-up-petition-form-comp-2'},
+  {id:80,num:'Comp 3',name:'Certificate of compliance (winding up)',cat:'court',desc:'Certificate confirming all procedural requirements for the winding up petition have been met.',url:'https://www.gov.uk/government/publications/form-comp-3-certificate-of-compliance'},
+  {id:81,num:'Comp 4',name:'Notice of persons intending to appear (winding up)',cat:'court',desc:'Filed by parties intending to appear at the hearing of a winding up petition.',url:'https://www.gov.uk/government/publications/form-comp-4-notice-of-persons-intending-to-appear'},
+  {id:82,num:'Comp 5',name:'List of appearances (winding up)',cat:'court',desc:'List of all parties who attended the winding up petition hearing.',url:'https://www.gov.uk/government/publications/form-comp-5-list-of-appearances'},
+  {id:83,num:'Comp 6',name:'Petition by contributory',cat:'court',desc:'Winding up petition presented by a contributory (shareholder) of the company.',url:'https://www.gov.uk/government/publications/form-comp-6-rule-726-petition-by-contributory'},
+  {id:84,num:'Comp 7',name:'Petition by office holder',cat:'court',desc:'Winding up petition presented by an existing office holder such as a liquidator or administrator.',url:'https://www.gov.uk/government/publications/form-comp-7-rules-726-and-727-petition-by-office-holder'},
+  {id:85,num:'Comp 8',name:'Administration application (court)',cat:'court',desc:'Court application for the appointment of an administrator under Rule 3.3.',url:'https://www.gov.uk/government/publications/form-comp-8-rule-33-administration-application'},
+  {id:86,num:'Form IAA',name:'Insolvency Act application notice',cat:'court',desc:'General purpose application notice for making applications to court in insolvency proceedings.',url:'https://www.gov.uk/government/publications/apply-to-the-court-about-an-insolvency-issue-form-iaa'},
+  {id:87,num:'LOC009',name:'Apply for more time to register security',cat:'court',desc:'Application to court for an extension of time to register security for a loan.',url:'https://www.gov.uk/government/publications/apply-for-more-time-to-register-security-for-a-loan-form-loc009'},
+  {id:88,num:'LOC010',name:'Apply to rescind a winding up order',cat:'court',desc:'Application form for a party seeking to rescind a winding up order.',url:'https://www.gov.uk/government/publications/form-loc010-i-wish-to-apply-to-rescind-a-winding-up-order-what-do-i-do'},
+  {id:89,num:'LOC013',name:'Certificate that bankruptcy has ended',cat:'court',desc:'Application for a certificate confirming discharge from bankruptcy.',url:'https://www.gov.uk/government/publications/get-a-certificate-to-show-your-bankruptcy-has-ended-form-loc013'},
+  {id:90,num:'SD1',name:'Statutory demand — company',cat:'court',desc:'Formal demand served on a limited company for a debt of £750 or more payable immediately.',url:'https://www.gov.uk/government/publications/demand-immediate-payment-of-a-debt-from-a-limited-company-form-sd1'},
+  {id:91,num:'SD2',name:'Statutory demand — individual (immediate)',cat:'court',desc:'Formal demand served on an individual for a debt of £5,000+ payable immediately.',url:'https://www.gov.uk/government/publications/demand-immediate-payment-of-a-debt-form-sd2'},
+  {id:92,num:'SD2R',name:'Statutory demand — individual (s.268 IA1986)',cat:'court',desc:'Statutory demand under s.268(1)(a) for a liquidated sum payable immediately.',url:'https://www.gov.uk/government/publications/form-sd2r-statutory-demand-under-section-2681a-of-the-insolvency-act-1986-debt-for-liquidated-sum-payable-immediately'},
+  {id:93,num:'SD3',name:'Statutory demand — debt at future date',cat:'court',desc:'Statutory demand under s.268(1)(a) for a debt payable at a future date.',url:'https://www.gov.uk/government/publications/form-sd3-statutory-demand-under-section-2681a-of-the-insolvency-act-1986-debt-payable-at-future-date'},
+  {id:94,num:'SD4',name:'Statutory demand — post-judgment debt',cat:'court',desc:'Statutory demand for a liquidated sum payable immediately following a court judgment.',url:'https://www.gov.uk/government/publications/form-sd4-statutory-demand-under-section-2681a-of-the-insolvency-act-1986-debt-for-liquidated-sum-payable-immediately-following-a-judgment-or-ord'},
+  {id:95,num:'Rule 14.4',name:'Proof of debt (general form)',cat:'is',desc:'Standard template for creditors to submit claims in a liquidation, administration or bankruptcy.',url:'https://www.gov.uk/government/publications/rule-144-proof-of-debt-general-form'},
+  {id:96,num:'Rule 1.38',name:"Creditor's election to opt out",cat:'is',desc:'A creditor uses this to elect to opt out of receiving further correspondence in an insolvency case.',url:'https://www.gov.uk/government/publications/rule-138-creditors-election-to-opt-out'},
+  {id:97,num:'Rule 1.38R',name:"Creditor's opt-out revocation",cat:'is',desc:"Used to revoke a previously submitted opt-out election, reinstating the creditor's right to receive correspondence.",url:'https://www.gov.uk/government/publications/rule-138-creditors-election-to-opt-out-revocation'},
+  {id:98,num:'Rule 7.41',name:'Statement of affairs (company winding up)',cat:'is',desc:'Formal statement of the company assets and liabilities prepared by directors for a compulsory winding up.',url:'https://www.gov.uk/government/publications/rule-741-statement-of-affairs-company-winding-up'},
+  {id:99,num:'Rule 7.42',name:'Statement of concurrence (company winding up)',cat:'is',desc:'Statement by a director concurring with or qualifying the statement of affairs in a compulsory winding up.',url:'https://www.gov.uk/government/publications/rule-742-statement-of-affairs-statement-of-concurrence-company-winding-up'},
+  {id:100,num:'Rule 7.69',name:"Liquidator's application for release",cat:'is',desc:'Application by a liquidator to the Secretary of State for their release on completion of a winding up.',url:'https://www.gov.uk/government/publications/rule-769-liquidators-application-to-the-secretary-of-state-for-release-person-other-than-official-receiver-company-winding-up'},
+  {id:101,num:'Rule 7.99',name:'Creditor request for public examination (company)',cat:'is',desc:"A creditor's notice to the official receiver requesting a public examination of an officer in a company winding up.",url:'https://www.gov.uk/government/publications/rule-799-request-by-a-creditor-for-a-public-examination-company-winding-up-notice-to-official-receiver'},
+  {id:102,num:'Rule 7.100',name:'Contributory request for public examination',cat:'is',desc:"A contributory's notice to the official receiver requesting a public examination in a company winding up.",url:'https://www.gov.uk/government/publications/rule-7100-request-by-a-contributory-for-a-public-examination-company-winding-up-notice-to-official-receiver'},
+  {id:103,num:'Rule 15.18',name:'Creditor request for a decision (company)',cat:'is',desc:"A creditor's request requiring the office holder to seek a creditor decision in a company winding up.",url:'https://www.gov.uk/government/publications/rule-1518-request-by-creditors-for-a-decision-company-winding-up'},
+  {id:104,num:'Rule 16.2/3',name:'Proxy form — specific (company)',cat:'is',desc:'Specific proxy authorising a named person to vote on behalf of a creditor at a decision procedure.',url:'https://www.gov.uk/government/publications/rule-162-and-163-proxy-specific-company-winding-up'},
+  {id:105,num:'Rule 19.9',name:'Application on disclaimer (company)',cat:'is',desc:'Application by an interested party for a decision on disclaimer of property in a company winding up.',url:'https://www.gov.uk/government/publications/rule-199-application-by-interested-party-for-decision-on-disclaimer-company-winding-up'},
+  {id:106,num:'Rule 22.4',name:'Notice to creditors — s.216 prohibited name',cat:'is',desc:'Notice to creditors where a director proposes to re-use a prohibited name under s.216 Insolvency Act 1986.',url:'https://www.gov.uk/government/publications/rule-224-notice-to-creditors-s216-re-use-of-a-prohibited-name'},
+  {id:107,num:'Rule 10.44',name:"Bankruptcy appeal — Adjudicator's refusal",cat:'bankruptcy',desc:"Application to appeal against the Adjudicator's decision to refuse to make a bankruptcy order.",url:'https://www.gov.uk/government/publications/rule-1044-bankruptcy-application-to-appeal-against-adjudicators-decision-to-refuse-to-make-a-bankruptcy-order'},
+  {id:108,num:'Rule 10.55/56',name:'Statement of affairs (bankruptcy)',cat:'bankruptcy',desc:"Full statement of the bankrupt's assets, liabilities, income and creditors prepared by the debtor.",url:'https://www.gov.uk/government/publications/rule-1055-and-1056-statement-of-affairs-bankruptcy'},
+  {id:109,num:'Rule 10.101',name:'Creditor request for public examination (bankruptcy)',cat:'bankruptcy',desc:"A creditor's notice to the official receiver requesting a public examination of a bankrupt.",url:'https://www.gov.uk/government/publications/rule-10101-request-by-a-creditor-for-a-public-examination-bankruptcy-notice-to-official-receiver'},
+  {id:110,num:'Rule 15.18B',name:'Creditor request for a decision (bankruptcy)',cat:'bankruptcy',desc:"A creditor's request requiring the trustee to seek a creditor decision in a bankruptcy.",url:'https://www.gov.uk/government/publications/rule-1518-request-by-creditors-for-a-decision-bankruptcy'},
+  {id:111,num:'Rule 16.2/3B',name:'Proxy form — specific (bankruptcy)',cat:'bankruptcy',desc:'Specific proxy authorising a named person to vote at a decision procedure in a bankruptcy.',url:'https://www.gov.uk/government/publications/rule-162-and-163-proxy-specific-bankruptcy'},
+  {id:112,num:'Rule 19.9B',name:'Application on disclaimer (bankruptcy)',cat:'bankruptcy',desc:'Application by an interested party for a decision on disclaimer of property in a bankruptcy.',url:'https://www.gov.uk/government/publications/rule-199-application-by-interested-party-for-decision-on-disclaimer-bankruptcy'},
+  {id:113,num:'Rule 20.5',name:'Bankruptcy — non-disclosure of address',cat:'bankruptcy',desc:"Application for a court order preventing disclosure of a bankrupt's current address.",url:'https://www.gov.uk/government/publications/rule-205-bankruptcy-application-for-an-order-for-non-disclosure-of-current-address'},
+  {id:114,num:'Rule 20.4',name:'DRO — non-disclosure of address',cat:'bankruptcy',desc:'Debtor application for a non-disclosure order in a Debt Relief Order.',url:'https://www.gov.uk/government/publications/rule-204-debtor-application-for-an-order-for-non-disclosure-of-current-address'},
+  {id:115,num:'SIP 1',name:'Introduction to SIPs',cat:'sip',desc:'Sets out the purpose, status and application of Statements of Insolvency Practice. All IPs must read this alongside every other SIP.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:116,num:'SIP 2',name:'Investigations and conduct reports',cat:'sip',desc:'Required practice for investigations in administrations and insolvent liquidations, and submission of director conduct reports to the Insolvency Service.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:117,num:'SIP 3',name:'Individual voluntary arrangements',cat:'sip',desc:'Required practice for IPs acting as nominee or supervisor in an individual voluntary arrangement.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:118,num:'SIP 3.1',name:'IVA — detailed requirements',cat:'sip',desc:'Detailed requirements for IVA proposals, nominee reports and ongoing supervision.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:119,num:'SIP 3.2',name:'Company voluntary arrangements',cat:'sip',desc:'Required practice for IPs acting as nominee or supervisor in a company voluntary arrangement.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:120,num:'SIP 6',name:'Decision procedures and deemed consent',cat:'sip',desc:'Required practice for use of deemed consent and decision procedures in insolvency proceedings.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:121,num:'SIP 7',name:'Presentation of financial information',cat:'sip',desc:'Required practice for how IPs present financial information in receipts and payments accounts and reports.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:122,num:'SIP 9',name:'Remuneration of insolvency office holders',cat:'sip',desc:'Required practice for fixing, approving and drawing remuneration in all types of insolvency appointment.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:123,num:'SIP 11',name:'Handling of funds in insolvency',cat:'sip',desc:'Required practice for receipt, handling and disbursement of funds held in insolvency cases.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:124,num:'SIP 13',name:'Disposal of assets to connected parties',cat:'sip',desc:'Required practice when an IP proposes to sell assets to a connected party in an insolvency process.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:125,num:'SIP 14',name:"Receiver's responsibility to preferential creditors",cat:'sip',desc:'Required practice for administrative receivers in relation to identifying and paying preferential creditors.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:126,num:'SIP 15',name:'Reporting to committees and commissioners',cat:'sip',desc:"Required practice for IPs reporting to creditors' committees in formal insolvencies.",url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:127,num:'SIP 16',name:'Pre-packaged sales in administrations',cat:'sip',desc:'Required practice for pre-pack administrations, including mandatory disclosure to creditors of marketing conducted and the rationale for the sale.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/more/29131/page/1/sip-16-pre-packaged-sales-in-administrations/'},
+  {id:128,num:'SIP 17',name:"Receiver's responsibility for company records",cat:'sip',desc:'Required practice for administrative receivers regarding custody and preservation of company records.',url:'https://www.r3.org.uk/technical-library/england-wales/sips/'},
+  {id:129,num:'CDIQ',name:"Director's conduct questionnaire",cat:'practitioner',desc:"Questionnaire sent to directors of insolvent companies to gather information on conduct for the IP's director conduct report to the Insolvency Service. Typically 30-70 questions covering trading history, debts and asset disposals.",url:''},
+  {id:130,num:'DIQ',name:"Director's information questionnaire",cat:'practitioner',desc:"Pre-appointment questionnaire completed by directors providing information on the company's financial position, assets, liabilities and recent transactions.",url:''},
+  {id:131,num:'SIP16 Disc',name:'SIP 16 pre-pack disclosure statement',cat:'practitioner',desc:'Mandatory disclosure document under SIP 16 setting out details of pre-appointment marketing, valuations obtained and rationale for a pre-packaged sale in administration.',url:''},
+  {id:132,num:'R&P',name:'Receipts and payments account',cat:'practitioner',desc:'Statement of all money received into and paid out of the insolvency estate during a reporting period. Must comply with SIP 7.',url:''},
+  {id:133,num:'Rem Appr',name:'Remuneration approval request',cat:'practitioner',desc:"Document sent to creditors or committee seeking approval for the IP's basis and level of remuneration, as required by SIP 9.",url:''},
+  {id:134,num:'Cred Guide',name:"Creditors' guide to fees",cat:'practitioner',desc:"Plain English guide explaining to creditors how the IP's fees are charged, how to object and how to request information. Required by SIP 9.",url:''},
+  {id:135,num:'Dec Notice',name:'Decision procedure notice',cat:'practitioner',desc:'Notice to creditors initiating a decision procedure on a particular matter, such as approving proposals or fixing remuneration.',url:''},
+  {id:136,num:'Proof Ltr',name:'Proof of debt covering letter',cat:'practitioner',desc:'Letter sent to known creditors enclosing a proof of debt form and inviting submission of claims to participate in a distribution.',url:''},
+  {id:137,num:'Appt Ltr',name:'Appointment notification letter',cat:'practitioner',desc:'First letter sent by the IP on appointment notifying the company, employees, creditors and other stakeholders of the insolvency appointment.',url:''},
+  {id:138,num:'Emp Ltr',name:'Employee notification letter',cat:'practitioner',desc:"Letter to employees on appointment explaining their employment status, rights to claim from the National Insurance Fund, and how to submit redundancy and arrears of pay claims.",url:''},
+  {id:139,num:'Sec Ltr',name:'Secured creditor notification letter',cat:'practitioner',desc:"Letter to the holder of a fixed and/or floating charge notifying them of the appointment and outlining the IP's intentions regarding charged assets.",url:''},
+  {id:140,num:'HMRC Notif',name:'HMRC notification of appointment',cat:'practitioner',desc:'Standard notification sent to HMRC on appointment covering corporation tax, VAT, PAYE/NIC and outstanding returns.',url:''},
+  {id:141,num:'Asset Sch',name:'Asset schedule / inventory',cat:'practitioner',desc:'Detailed listing of all assets identified at appointment including plant, equipment, stock, debtors and IP. Used to support valuations and asset realisations.',url:''},
+  {id:142,num:'Bank Rec',name:'Bank reconciliation',cat:'practitioner',desc:'Reconciliation of the insolvency bank account confirming the balance matches the cash book at a given date.',url:''},
+  {id:143,num:'Div Cert',name:'Dividend certificate and payment letter',cat:'practitioner',desc:'Certificate confirming the rate of dividend being paid to unsecured creditors and the letter accompanying payment.',url:''},
+  {id:144,num:'VAT769',name:'Notify HMRC of insolvency appointment',cat:'hmrc',desc:"Notifies HMRC of the IP's appointment and establishes them as responsible person for the company's VAT.",url:'https://www.gov.uk/government/publications/vat-notification-of-insolvency-vat769'},
+  {id:145,num:'VAT427',name:'VAT reclaim in insolvency',cat:'hmrc',desc:'Used to reclaim input VAT incurred before the insolvency appointment that had not yet been recovered.',url:'https://www.gov.uk/government/publications/vat-refunds-for-those-in-insolvency-vat427'},
+  {id:146,num:'CT600',name:'Corporation tax return',cat:'hmrc',desc:'IP must file CT600 returns for each accounting period including the period to appointment date and any subsequent periods.',url:'https://www.gov.uk/government/publications/corporation-tax-company-tax-return-ct600-2015-version-3'},
+  {id:147,num:'P45',name:'Employee leaving (PAYE)',cat:'hmrc',desc:'Must be issued to all employees dismissed following the insolvency appointment.',url:'https://www.gov.uk/paye-forms-p45-p60-p11d'},
+  {id:148,num:'P11D',name:'Benefits in kind return',cat:'hmrc',desc:'Annual return of employee benefits. IP may need to file for periods not yet reported at appointment.',url:'https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d'},
+  {id:149,num:'P11D(b)',name:'Return of Class 1A NIC',cat:'hmrc',desc:'Annual return confirming total Class 1A NIC due on all benefits in kind reported on P11Ds.',url:'https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d'},
+  {id:150,num:'R27',name:'Deceased estate repayment claim',cat:'hmrc',desc:"Used to claim repayment of income tax on a deceased person's estate. Relevant in personal insolvency.",url:'https://www.gov.uk/government/publications/income-tax-repayment-claim-on-a-deceased-persons-estate-r27'},
+  {id:151,num:'FPS',name:'Full payment submission (RTI)',cat:'hmrc',desc:'Real time information submission to HMRC each time employees are paid. IP must continue to file FPS for any post-appointment payroll.',url:'https://www.gov.uk/running-payroll/rtl'},
+  {id:152,num:'EPS',name:'Employer payment summary (RTI)',cat:'hmrc',desc:'RTI submission used to recover statutory payments, claim NIC employment allowance, or report a period of no payroll activity.',url:'https://www.gov.uk/running-payroll/rtl'},
+];
+
+let currentCat = 'all';
+let currentSearch = '';
+let selectedId = null;
+let abortController = null;
+
+function getFiltered() {
+  return FORMS.filter(f => {
+    const matchCat = currentCat === 'all' || f.cat === currentCat;
+    const q = currentSearch.toLowerCase();
+    const matchSearch = !q || f.name.toLowerCase().includes(q) || f.num.toLowerCase().includes(q) || f.desc.toLowerCase().includes(q) || (CAT_LABEL[f.cat] || '').toLowerCase().includes(q);
+    return matchCat && matchSearch;
+  });
+}
+
+function renderGrid() {
+  const forms = getFiltered();
+  const grid = document.getElementById('formsGrid');
+  document.getElementById('countLabel').textContent = forms.length + ' document' + (forms.length !== 1 ? 's' : '');
+  if (forms.length === 0) {
+    grid.innerHTML = '<div class="empty-grid"><div style="font-size:32px;opacity:0.3">🔍</div><p>No documents match your search.</p></div>';
+    return;
+  }
+  grid.innerHTML = forms.map(f => `
+    <div class="card${selectedId === f.id ? ' selected' : ''}" onclick="selectForm(${f.id})">
+      <div class="card-top">
+        <div class="card-name">${f.name}</div>
+        <span class="card-num" title="${f.num}">${f.num}</span>
+      </div>
+      <div class="card-desc">${f.desc.length > 95 ? f.desc.slice(0, 95) + '…' : f.desc}</div>
+      <span class="card-tag ${CAT_TAG[f.cat] || ''}">${CAT_LABEL[f.cat] || f.cat}</span>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = btn.dataset.cat;
+    renderGrid();
+  });
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  currentSearch = e.target.value;
+  renderGrid();
+});
+
+async function selectForm(id) {
+  if (abortController) abortController.abort();
+  selectedId = id;
+  renderGrid();
+  const f = FORMS.find(x => x.id === id);
+  document.getElementById('panelTitle').textContent = f.name;
+  document.getElementById('panelSub').textContent = f.num + ' · ' + (CAT_LABEL[f.cat] || f.cat);
+  document.getElementById('panelBody').innerHTML = `<div class="loading"><div class="dot-row"><div class="dot-anim"></div><div class="dot-anim"></div><div class="dot-anim"></div></div><span>Getting AI guidance...</span></div>`;
+  abortController = new AbortController();
+  try {
+    const response = await fetch('/api/explain', {
+      method: 'POST',
+      signal: abortController.signal,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ formName: f.name, formNum: f.num, formCat: CAT_LABEL[f.cat] || f.cat, formDesc: f.desc })
+    });
+    const pb = document.getElementById('panelBody');
+    pb.innerHTML = '<div id="streamText" style="font-size:12px;color:#1a1a18;line-height:1.7;white-space:pre-wrap"></div>';
+    const streamEl = document.getElementById('streamText');
+    let fullText = '';
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const lines = decoder.decode(value).split('\n');
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') break;
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.delta && parsed.delta.text) {
+              fullText += parsed.delta.text;
+              streamEl.textContent = fullText;
+            }
+          } catch(e) {}
+        }
+      }
+    }
+    renderFormatted(pb, fullText, f.url);
+  } catch(e) {
+    if (e.name !== 'AbortError') {
+      document.getElementById('panelBody').innerHTML = '<p class="error-msg">Could not load explanation. Please try again.</p>';
+    }
+  }
+}
+
+function renderFormatted(container, text, url) {
+  const sections = ['PURPOSE', 'WHEN IS IT USED', 'WHO FILES IT', 'KEY POINTS', 'COMMON MISTAKES'];
+  let found = [];
+  sections.forEach(s => {
+    const idx = text.indexOf(s + ':');
+    if (idx >= 0) found.push({ title: s, idx });
+  });
+  found.sort((a, b) => a.idx - b.idx);
+  let html = '';
+  found.forEach((sec, i) => {
+    const start = sec.idx + sec.title.length + 1;
+    const end = found[i + 1] ? found[i + 1].idx : text.length;
+    const content = text.slice(start, end).trim();
+    html += `<div class="ai-section"><div class="ai-section-title">${sec.title.toLowerCase()}</div><div class="ai-section-body">${content.replace(/\n/g, '<br>')}</div></div>`;
+  });
+  if (!found.length) html = `<div class="ai-section-body">${text.replace(/\n/g, '<br>')}</div>`;
+  if (url) html += `<a class="dl-link" href="${url}" target="_blank">&#8594; Download from Gov.uk</a>`;
+  container.innerHTML = html;
+}
+
+renderGrid();
+</script>
+</body>
+</html>
